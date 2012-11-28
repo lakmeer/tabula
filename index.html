@@ -1,0 +1,69 @@
+<!doctype html>
+<!--[if lte IE 8]>    <html class="no-js ie8 ie" lang="en"><![endif]-->
+<!--[if IE 9]>        <html class="no-js ie9 ie" lang="en"><![endif]-->
+<!--[if gt IE 9]><!-->
+<html class="no-js" lang="en"><!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <title>No Title</title>
+
+    <meta name="description" content="">
+    <meta name="author"      content="">
+    <meta name="viewport"    content="width=device-width,initial-scale=1">
+
+    <link rel="stylesheet" href="css/norm.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="lib/modernizr.min.js"></script>
+  </head>
+
+  <body>
+    <div class="center">
+      <header>
+        <h1>Tabula</h1>
+        <h2>It's a start</h2>
+      </header>
+
+      <div class="main" role="main">
+        <h3>Things to do:</h3>
+
+        <ul>
+          <li>Create .dev</li>
+          <li>Update <a href="http://www.jquery.com/download"    target="_blank">jQuery</a></li>
+          <li>Update <a href="http://www.modernizr.com/download" target="_blank">Modernizr</a></li>
+          <li>Compile helper and common style improvements from the last project</li>
+          <li>Run tests green</li>
+          <li>Push changes back to Tabula</li>
+          <li>Arrange 3rd party libs</li>
+          <li>Set up LiveReload</li>
+        </ul>
+      </div>
+
+      <footer>
+        <a href="http://github.com/lakmeer/tabula">github.com/lakmeer/tabula</a>
+      </footer>
+    </div>
+
+    <!-- Late Javascript -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="lib/jquery.min.js"><\/script>')</script>
+
+    <!-- Main Application -->
+    <script>
+      var Config = {
+        DEBUG_OVERRIDE : false
+      };
+    </script>
+    <script src="bin/app.js"></script>
+
+    <!-- Analytics -->
+    <script>
+      var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+      (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+      g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+      s.parentNode.insertBefore(g,s)}(document,'script'));
+    </script>
+  </body>
+</html>

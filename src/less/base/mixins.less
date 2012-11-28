@@ -1,0 +1,33 @@
+
+// Doodad
+// :before or :after element that dangles off the parent with pos:abs, providing decoration.
+.doodad(@w:20px, @h:20px) {
+  position: absolute;
+  content: '';
+  width: @w;
+  height: @h;
+  display: block;
+}
+
+
+// Box-sizing: border-box
+// Enforce border-box-sizing across browsers
+.border-box {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+       -o-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+
+// Transition
+// Cross-browser transition effect shim for single properties
+.transition(@prop:all, @easing:ease-in-out, @duration:0.3s) {
+  -webkit-transition: @prop @easing @duration;
+   -khtml-transition: @prop @easing @duration;
+     -moz-transition: @prop @easing @duration;
+      -ms-transition: @prop @easing @duration;
+       -o-transition: @prop @easing @duration;
+          transition: @prop @easing @duration;
+}
+

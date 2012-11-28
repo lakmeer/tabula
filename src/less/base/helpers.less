@@ -1,0 +1,71 @@
+
+//
+// HTML5 ✰ Helper Classes
+//
+
+
+// Clearfix
+.clearfix {
+  &:before, &:after {
+    content: " ";
+    display: table;
+  }
+  &:after {
+    clear: both;
+  }
+}
+
+
+// Image Replacement
+.ir {
+  border: 0;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  overflow: hidden;
+
+  &:before {
+    width: 0;
+    height: 100%;
+    content: "";
+    display: block;
+  }
+}
+
+
+// Hide
+.hidden {
+  display: none !important;
+  visibility: hidden;
+}
+
+
+// Screen-reader-aware content hiding
+.visuallyhidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+
+// Keep selectable
+.visuallyhidden.focusable:active,
+.visuallyhidden.focusable:focus {
+  clip: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  position: static;
+  width: auto;
+}
+
+
+// Hidden but keeps layout
+.invisible {
+  visibility: hidden;
+}
+
