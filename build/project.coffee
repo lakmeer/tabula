@@ -9,9 +9,10 @@ project =
   monitor : [
     "src/js"
     "src/cs"
+    "src/ls"
+    "src/ls/pages"
     "src/ls/classes"
     "src/ls/helpers"
-    "src/ls/pages"
     "build/project.coffee"
   ]
 
@@ -19,31 +20,30 @@ project =
 
   source : [
 
-    # Setup
-    "src/ls/prelude.ls"
-    "src/ls/setup.ls"
+    # Set up program structure and environment
+    "src/ls/init/prelude.ls"
+    "src/ls/init/setup.ls"
 
     # Include helpers as required
     "src/ls/helpers/assert.ls"
-    "src/ls/helpers/arrays.ls"
+    "src/ls/helpers/lists.ls"
     "src/ls/helpers/dates.ls"
-    "src/ls/helpers/dom.ls"
-    "src/ls/helpers/jquery.ls"
     "src/ls/helpers/misc.ls"
-    "src/ls/helpers/numbers.ls"
     "src/ls/helpers/pubsub.ls"
     "src/ls/helpers/strings.ls"
     "src/ls/helpers/install.ls"
 
     # 3rd Party Libs
+    # src/js/...
 
     # Class Definitions
+    # src/ls/classes/...
 
     # Page Controllers etc
     "src/ls/pages/home.ls"
 
-    # Program
-    "src/ls/jquery-ext.ls"
-    "src/ls/onready.ls"
+    # Program Start
+    "src/ls/init/jquery-ext.ls"
+    "src/ls/init/onready.ls"
 
   ]

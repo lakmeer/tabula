@@ -1,7 +1,9 @@
 
 # Pubsub
 
-[ pub, sub ] = do ->
+Helpers.PubSub = do ->
+
+  PUB_SPY = no
 
   channels = {}
 
@@ -11,7 +13,7 @@
 
   pub = (ch, msg) ->
     check ch
-    # if DEBUG then log ' >>', ch, '->', msg
+    if PUB_SPY then log ' >>', ch, '->', msg
     for fn in channels[ch]
       fn msg
 
@@ -19,14 +21,17 @@
     check ch
     channels[ch].push fn
 
-  [ pub, sub ]
+  return
 
+    # PubSub
+    pub : pub
+    sub : sub
 
-# Subscribe many handlers at once
+    # Assign hash of listeners at once
+    subMany : (obj) ->
+      for ch, fn of obj
+        sub ch, fn
 
-subMany = (obj) ->
-  for ch, fn of obj
-    sub ch, fn
+    # Enable auto-logging
+    PubSub : { enableSpying : (toggle=yes) -> PUB_SPY := toggle }
 
-
-window <<< { pub, sub, subMany }
