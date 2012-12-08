@@ -4,12 +4,12 @@
 # Debug flag - turns log output on or off
 #
 # Defaults to on if the server hostname matches 'localhost' or '*.dev'
-# Manually override debug mode in page source using DEBUG_OVERRIDE before the main file
+# Manually override debug mode in page source using ENABLE_LOGGING before the main file
 
 isLocal = !!(window.location.host + '').match 'localhost'
 isDev   = !!(window.location.host + '').match /\.dev$/
 
-Config.ALLOW_LOG = Config?.DEBUG_OVERRIDE ? isLocal or isDev
+Config.ALLOW_LOG = Config?.ENABLE_LOGGING ? isLocal or isDev
 
 log = do ->
   if not Config.ALLOW_LOG or not console?.log?
