@@ -7,12 +7,11 @@ project =
   minify : off
 
   monitor : [
-    "src/js"
-    "src/cs"
-    "src/ls"
-    "src/ls/pages"
-    "src/ls/classes"
-    "src/ls/helpers"
+    "src/classes"
+    "src/helpers"
+    "src/lib"
+    "src/init"
+    "src/pages"
     "build/project.coffee"
   ]
 
