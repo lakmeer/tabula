@@ -1,5 +1,5 @@
 /*
- * src/ls/init/prelude.ls - File number: 0
+ * src/init/prelude.ls - File number: 0
  *
  */
 
@@ -750,7 +750,7 @@ if (!f(x)) {
 
 
 /*
- * src/ls/init/setup.ls - File number: 1
+ * src/init/setup.ls - File number: 1
  *
  */
 
@@ -759,7 +759,7 @@ if (!f(x)) {
   var isLocal, isDev, ref$, log, that, slice$ = [].slice;
   isLocal = !!(window.location.host + '').match('localhost');
   isDev = !!(window.location.host + '').match(/\.dev$/);
-  Config.ALLOW_LOG = (ref$ = typeof Config != 'undefined' && Config !== null ? Config.DEBUG_OVERRIDE : void 8) != null
+  Config.ALLOW_LOG = (ref$ = typeof Config != 'undefined' && Config !== null ? Config.ENABLE_LOGGING : void 8) != null
     ? ref$
     : isLocal || isDev;
   log = function(){
@@ -805,61 +805,47 @@ if (!f(x)) {
 
 
 /*
- * src/ls/helpers/assert.ls - File number: 2
+ * src/helpers/assert.ls - File number: 2
  *
  */
 
 
 (function(){
+  var AssertionError;
+  AssertionError = (function(superclass){
+    var prototype = extend$((import$(AssertionError, superclass).displayName = 'AssertionError', AssertionError), superclass).prototype, constructor = AssertionError;
+    function AssertionError(message){
+      this.message = message;
+    }
+    prototype.name = 'AssertionError';
+    return AssertionError;
+  }(Error));
   Helpers.Assert = {
     assert: {
       eq: function(a, e){
         if (a !== e) {
-          throw new Error("Assertion::Equal - Expected " + e + ", but got " + a);
+          throw new AssertionError("Equal - Expected " + e + ", but got " + a);
         }
       }
     }
   };
+  function extend$(sub, sup){
+    function fun(){} fun.prototype = (sub.superclass = sup).prototype;
+    (sub.prototype = new fun).constructor = sub;
+    if (typeof sup.extended == 'function') sup.extended(sub);
+    return sub;
+  }
+  function import$(obj, src){
+    var own = {}.hasOwnProperty;
+    for (var key in src) if (own.call(src, key)) obj[key] = src[key];
+    return obj;
+  }
 }).call(this);
 
 
 
 /*
- * src/ls/helpers/lists.ls - File number: 3
- *
- */
-
-
-(function(){
-  var contains;
-  Helpers.Lists = [
-    contains = function(list, needle){
-      var i$, len$, x;
-      for (i$ = 0, len$ = list.length; i$ < len$; ++i$) {
-        x = list[i$];
-        if (x === needle) {
-          return true;
-        }
-      }
-      return false;
-    }, {
-      mash: prelude.listToObj,
-      unmash: function(obj){
-        var k, v, results$ = [];
-        for (k in obj) {
-          v = obj[k];
-          results$.push([k, v]);
-        }
-        return results$;
-      }
-    }
-  ];
-}).call(this);
-
-
-
-/*
- * src/ls/helpers/dates.ls - File number: 4
+ * src/helpers/dates.ls - File number: 3
  *
  */
 
@@ -896,57 +882,12 @@ if (!f(x)) {
 
 
 /*
- * src/ls/helpers/misc.ls - File number: 5
+ * src/helpers/dom.ls - File number: 4
  *
  */
 
 
 (function(){
-  Helpers.Types = function(){
-    var ofType;
-    ofType = curry$(function(t, x){
-      return typeof x === t;
-    });
-    return {
-      isObject: ofType('object'),
-      isFunction: ofType('function'),
-      isString: ofType('string')
-    };
-  }();
-  Helpers.Timers = {
-    delay: flip(setTimeout),
-    defer: function(λ){
-      return delay(0, λ);
-    },
-    repeat: function(t, λ, now){
-      var timer;
-      now == null && (now = false);
-      timer = setInterval(λ, t);
-      if (now) {
-        λ();
-      }
-      return {
-        stop: function(){
-          return clearInterval(timer);
-        }
-      };
-    }
-  };
-  Helpers.Keys = {
-    KEY: {
-      RETURN: 13,
-      ESC: 27,
-      LEFT: 37,
-      UP: 38,
-      RIGHT: 39,
-      DOWN: 40
-    },
-    showKeycodes: function(){
-      return $(document).keydown(function(it){
-        return log(it.which);
-      });
-    }
-  };
   Helpers.Dom = {
     tween: function(start, end, time, cb){
       var z;
@@ -973,6 +914,111 @@ if (!f(x)) {
       return code;
     }
   };
+}).call(this);
+
+
+
+/*
+ * src/helpers/install.ls - File number: 5
+ *
+ */
+
+
+(function(){
+  window.installHelpers = function(target, groups){
+    var name, ref$, group, i$, len$, results$ = [];
+    target == null && (target = window);
+    groups == null && (groups = []);
+    if (groups.length === 0) {
+      log('Helpers::Install -', join(' + ', keys(Helpers)));
+      for (name in ref$ = Helpers) {
+        group = ref$[name];
+        results$.push(import$(target, group));
+      }
+      return results$;
+    } else {
+      log('Helpers::Install -', join(' + ', groups));
+      for (i$ = 0, len$ = groups.length; i$ < len$; ++i$) {
+        group = groups[i$];
+        results$.push(import$(target, Helpers[group]));
+      }
+      return results$;
+    }
+  };
+  function import$(obj, src){
+    var own = {}.hasOwnProperty;
+    for (var key in src) if (own.call(src, key)) obj[key] = src[key];
+    return obj;
+  }
+}).call(this);
+
+
+
+/*
+ * src/helpers/keycodes.ls - File number: 6
+ *
+ */
+
+
+(function(){
+  Helpers.Keys = {
+    KEY: {
+      RETURN: 13,
+      ESC: 27,
+      LEFT: 37,
+      UP: 38,
+      RIGHT: 39,
+      DOWN: 40
+    },
+    showKeycodes: function(){
+      return $(document).keydown(function(it){
+        return log(it.which);
+      });
+    }
+  };
+}).call(this);
+
+
+
+/*
+ * src/helpers/lists.ls - File number: 7
+ *
+ */
+
+
+(function(){
+  Helpers.Lists = {
+    mash: prelude.listToObj,
+    unmash: function(obj){
+      var k, v, results$ = [];
+      for (k in obj) {
+        v = obj[k];
+        results$.push([k, v]);
+      }
+      return results$;
+    },
+    contains: function(list, needle){
+      var i$, len$, x;
+      for (i$ = 0, len$ = list.length; i$ < len$; ++i$) {
+        x = list[i$];
+        if (x === needle) {
+          return true;
+        }
+      }
+      return false;
+    }
+  };
+}).call(this);
+
+
+
+/*
+ * src/helpers/numbers.ls - File number: 8
+ *
+ */
+
+
+(function(){
   Helpers.Numbers = {
     limit: curry$(function(low, high, ix, wrap){
       wrap == null && (wrap = false);
@@ -1005,7 +1051,7 @@ if (!f(x)) {
 
 
 /*
- * src/ls/helpers/pubsub.ls - File number: 6
+ * src/helpers/pubsub.ls - File number: 9
  *
  */
 
@@ -1060,7 +1106,7 @@ if (!f(x)) {
 
 
 /*
- * src/ls/helpers/strings.ls - File number: 7
+ * src/helpers/strings.ls - File number: 10
  *
  */
 
@@ -1177,43 +1223,82 @@ if (!f(x)) {
 
 
 /*
- * src/ls/helpers/install.ls - File number: 8
+ * src/helpers/timers.ls - File number: 11
  *
  */
 
 
 (function(){
-  window.installHelpers = function(target, groups){
-    var name, ref$, group, i$, len$, results$ = [];
-    target == null && (target = window);
-    groups == null && (groups = []);
-    if (groups.length === 0) {
-      log('Helpers::Install -', join(' + ', keys(Helpers)));
-      for (name in ref$ = Helpers) {
-        group = ref$[name];
-        results$.push(import$(target, group));
+  Helpers.Timers = {
+    delay: flip(setTimeout),
+    defer: function(λ){
+      return delay(0, λ);
+    },
+    repeat: function(t, λ, now){
+      var timer;
+      now == null && (now = false);
+      timer = setInterval(λ, t);
+      if (now) {
+        λ();
       }
-      return results$;
-    } else {
-      log('Helpers::Install -', join(' + ', groups));
-      for (i$ = 0, len$ = groups.length; i$ < len$; ++i$) {
-        group = groups[i$];
-        results$.push(import$(target, Helpers[group]));
-      }
-      return results$;
+      return {
+        stop: function(){
+          return clearInterval(timer);
+        }
+      };
     }
   };
-  function import$(obj, src){
-    var own = {}.hasOwnProperty;
-    for (var key in src) if (own.call(src, key)) obj[key] = src[key];
-    return obj;
+}).call(this);
+
+
+
+/*
+ * src/helpers/types.ls - File number: 12
+ *
+ */
+
+
+(function(){
+  Helpers.Types = function(){
+    var detect, ofType;
+    detect = function(value, type){
+      type == null && (type = typeof value);
+      if (type !== 'object') {
+        return type;
+      }
+      if (value instanceof Array) {
+        return 'array';
+      }
+      if (!value) {
+        return 'null';
+      } else {
+        return 'object';
+      }
+    };
+    ofType = curry$(function(type, x){
+      return type === detect(x);
+    });
+    return {
+      typeOf: detect,
+      isObject: ofType('object'),
+      isFunction: ofType('function'),
+      isString: ofType('string'),
+      isArray: ofType('array')
+    };
+  }();
+  function curry$(f, args){
+    return f.length > 1 ? function(){
+      var params = args ? args.concat() : [];
+      return params.push.apply(params, arguments) < f.length && arguments.length ?
+        curry$.call(this, f, params) : f.apply(this, params);
+    } : f;
   }
 }).call(this);
 
 
 
 /*
- * src/ls/pages/home.ls - File number: 9
+ * src/pages/home.ls - File number: 13
  *
  */
 
@@ -1227,7 +1312,7 @@ if (!f(x)) {
 
 
 /*
- * src/ls/init/jquery-ext.ls - File number: 10
+ * src/init/jquery-ext.ls - File number: 14
  *
  */
 
@@ -1391,7 +1476,7 @@ if (!f(x)) {
 
 
 /*
- * src/ls/init/onready.ls - File number: 11
+ * src/init/onready.ls - File number: 15
  *
  */
 

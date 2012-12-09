@@ -20,29 +20,33 @@ project =
   source : [
 
     # Set up program structure and environment
-    "src/ls/init/prelude.ls"
-    "src/ls/init/setup.ls"
+    "src/init/prelude.ls"
+    "src/init/setup.ls"
 
     # Include helpers as required
-    "src/ls/helpers/assert.ls"
-    "src/ls/helpers/lists.ls"
-    "src/ls/helpers/dates.ls"
-    "src/ls/helpers/misc.ls"
-    "src/ls/helpers/pubsub.ls"
-    "src/ls/helpers/strings.ls"
-    "src/ls/helpers/install.ls"
+    # "src/helpers/assert.ls"
+    # "src/helpers/dates.ls"
+    # "src/helpers/dom.ls"
+    # "src/helpers/keycodes.ls"
+    # "src/helpers/lists.ls"
+    # "src/helpers/numbers.ls"
+    # "src/helpers/pubsub.ls"
+    # "src/helpers/strings.ls"
+    # "src/helpers/timers.ls"
+    # "src/helpers/types.ls"
+    # "src/helpers/install.ls"
 
     # 3rd Party Libs
-    # src/js/...
+    # src/lib/...
 
     # Class Definitions
-    # src/ls/classes/...
+    # src/classes/...
 
-    # Page Controllers etc
-    "src/ls/pages/home.ls"
+    # Page Controllers
+    "src/pages/home.ls"
 
     # Program Start
-    "src/ls/init/jquery-ext.ls"
-    "src/ls/init/onready.ls"
+    "src/init/jquery-ext.ls"
+    "src/init/onready.ls"
 
   ]
