@@ -62,6 +62,29 @@ window <<<
 # Set up environment and config
 #
 
+# jQuery Root node shortcuts
+
+jQuery.D = $(document)
+jQuery.W = $(window)
+jQuery.B = $('body')
+
+
+# Run Page Controllers
+#
+# Each page of the site can define the name of a controller that sets
+# up page-specific event listeners or behaviours. It is set in the
+# page markup at the #main element with data-page-controller="<name>"
+
+Controllers.runPageControllers = ->
+
+  $page = $('[data-page-controller]').last!
+  ctrlName = $page.data 'page-controller'
+
+  if ctrlName?
+    log "PageController '#ctrlName' requested"
+    Controllers[ctrlName]? $page, -> $page.find it
+
+
 # Install Prelude
 window <<< prelude
 

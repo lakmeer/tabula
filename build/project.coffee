@@ -34,7 +34,7 @@ project =
     # "src/helpers/strings.ls"
     # "src/helpers/timers.ls"
     # "src/helpers/types.ls"
-    # "src/helpers/install.ls"
+    "src/helpers/install.ls"
 
     # 3rd Party Libs
     # src/lib/...
@@ -46,7 +46,7 @@ project =
     "src/pages/home.ls"
 
     # Program Start
-    "src/init/jquery-ext.ls"
+    # "src/init/jquery-ext.ls"
     "src/init/onready.ls"
 
   ]

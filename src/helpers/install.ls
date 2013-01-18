@@ -1,5 +1,5 @@
 
-window.installHelpers = (target=window, groups=[]) ->
+Helpers.installHelpers = (target=window, groups=[]) ->
 
   if groups.length is 0
     log 'Helpers::Install -', join ' + ', keys Helpers
