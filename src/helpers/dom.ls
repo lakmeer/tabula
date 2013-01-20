@@ -9,9 +9,9 @@
 
 Helpers.Dom =
 
-  tween : (start, end, time, cb) ->
+  tween : (start, end, time, λ_step, λ_cb = id) ->
     z = { val : start }
-    $(z).animate { val : end }, { duration : time, step : cb }
+    $(z).animate { val : end }, { duration : time, step : λ_step, complete : λ_cb }
 
   scroll : (dest, time = 400) ->
     tween $(document).scrollTop(), dest, time, (x) -> $(document).scrollTop x
