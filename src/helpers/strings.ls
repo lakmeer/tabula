@@ -7,6 +7,26 @@
 
 Helpers.Strings = do ->
 
+  # Functional shortcuts for string methods
+
+  uppercase = (msg) -> String(msg).toUpperCase!
+  lowercase = (msg) -> String(msg).toLowerCase!
+
+
+  # Titlecase
+
+  capitalize = (msg) ->
+    µ_titleCase = (word) ->
+      chars = letters word
+      unletters [ uppercase head chars ] +++ map lowercase, tail chars
+    unwords map µ_titleCase, words msg
+
+
+  # Hyphencase - camel-to-hyphenated transform
+
+  breakAtCaps = (word) -> breakIt (-> it is it.toUpperCase!), word
+  hyphencase = (msg) -> join '-', filter id, map lowercase, breakAtCaps msg
+
 
   # Pad - Append given char to front until length is reached
 
@@ -51,3 +71,10 @@ Helpers.Strings = do ->
 
     pad   : pad
     splat : splat
+
+    uppercase  : uppercase
+    lowercase  : lowercase
+    capitalize : capitalize
+    hyphencase : hyphencase
+
+
