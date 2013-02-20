@@ -24,16 +24,16 @@ project =
     "src/init/setup.ls"
 
     # Include helpers as required
-    # "src/helpers/assert.ls"
-    # "src/helpers/dates.ls"
-    # "src/helpers/dom.ls"
-    # "src/helpers/keycodes.ls"
-    # "src/helpers/lists.ls"
-    # "src/helpers/numbers.ls"
-    # "src/helpers/pubsub.ls"
-    # "src/helpers/strings.ls"
-    # "src/helpers/timers.ls"
-    # "src/helpers/types.ls"
+    "src/helpers/assert.ls"
+    "src/helpers/dates.ls"
+    "src/helpers/dom.ls"
+    "src/helpers/keycodes.ls"
+    "src/helpers/lists.ls"
+    "src/helpers/numbers.ls"
+    "src/helpers/pubsub.ls"
+    "src/helpers/strings.ls"
+    "src/helpers/timers.ls"
+    "src/helpers/types.ls"
     "src/helpers/install.ls"
 
     # 3rd Party Libs

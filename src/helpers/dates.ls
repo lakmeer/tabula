@@ -18,13 +18,9 @@ month = (x, short=no) ->
 
 
 Helpers.Date =
-
-    month : month
-
-    toHumanDate : (date) ->
-      p = date.match(/(\d{4})\W(\d{2})\W(\d{2})/)[1 to 3]
-      p[1] = month p[1]
-      p.reverse!join(' ')
-
-  }
+  month : month
+  toHumanDate : (date) ->
+    p = date.match(/(\d{4})\W(\d{2})\W(\d{2})/)[1 to 3]
+    p[1] = month p[1]
+    p.reverse!join(' ')
 

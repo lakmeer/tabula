@@ -793,6 +793,20 @@ if (!f(x)) {
   window.log = log;
   window.Helpers = {};
   window.Controllers = {};
+  jQuery.D = $(document);
+  jQuery.W = $(window);
+  jQuery.B = $('body');
+  Controllers.runPageControllers = function(){
+    var $page, ctrlName;
+    $page = $('[data-page-controller]').last();
+    ctrlName = $page.data('page-controller');
+    if (ctrlName != null) {
+      log("PageController '" + ctrlName + "' requested");
+      return typeof Controllers[ctrlName] === 'function' ? Controllers[ctrlName]($page, function(it){
+        return $page.find(it);
+      }) : void 8;
+    }
+  };
   import$(window, prelude);
   jQuery.support.cors = true;
   function import$(obj, src){
@@ -851,32 +865,30 @@ if (!f(x)) {
 
 
 (function(){
-  Helpers.Date = function(){
-    var months_short, months_long, month;
-    months_short = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    months_long = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    month = function(x, short){
-      short == null && (short = false);
-      if (x > 12 || x < 1) {
-        return void 8;
+  var months_short, months_long, month;
+  months_short = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  months_long = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  month = function(x, short){
+    short == null && (short = false);
+    if (x > 12 || x < 1) {
+      return void 8;
+    } else {
+      if (short) {
+        return months_short[x];
       } else {
-        if (short) {
-          return months_short[x];
-        } else {
-          return months_long[x];
-        }
+        return months_long[x];
       }
-    };
-    return {
-      month: month,
-      toHumanDate: function(date){
-        var ref$, p;
-        p = [(ref$ = date.match(/(\d{4})\W(\d{2})\W(\d{2})/))[1], ref$[2], ref$[3]];
-        p[1] = month(p[1]);
-        return p.reverse().join(' ');
-      }
-    };
-  }();
+    }
+  };
+  Helpers.Date = {
+    month: month,
+    toHumanDate: function(date){
+      var ref$, p;
+      p = [(ref$ = date.match(/(\d{4})\W(\d{2})\W(\d{2})/))[1], ref$[2], ref$[3]];
+      p[1] = month(p[1]);
+      return p.reverse().join(' ');
+    }
+  };
 }).call(this);
 
 
@@ -889,8 +901,9 @@ if (!f(x)) {
 
 (function(){
   Helpers.Dom = {
-    tween: function(start, end, time, cb){
+    tween: function(start, end, time, λ_step, λ_cb){
       var z;
+      λ_cb == null && (λ_cb = id);
       z = {
         val: start
       };
@@ -898,7 +911,8 @@ if (!f(x)) {
         val: end
       }, {
         duration: time,
-        step: cb
+        step: λ_step,
+        complete: λ_cb
       });
     },
     scroll: function(dest, time){
@@ -919,43 +933,7 @@ if (!f(x)) {
 
 
 /*
- * src/helpers/install.ls - File number: 5
- *
- */
-
-
-(function(){
-  window.installHelpers = function(target, groups){
-    var name, ref$, group, i$, len$, results$ = [];
-    target == null && (target = window);
-    groups == null && (groups = []);
-    if (groups.length === 0) {
-      log('Helpers::Install -', join(' + ', keys(Helpers)));
-      for (name in ref$ = Helpers) {
-        group = ref$[name];
-        results$.push(import$(target, group));
-      }
-      return results$;
-    } else {
-      log('Helpers::Install -', join(' + ', groups));
-      for (i$ = 0, len$ = groups.length; i$ < len$; ++i$) {
-        group = groups[i$];
-        results$.push(import$(target, Helpers[group]));
-      }
-      return results$;
-    }
-  };
-  function import$(obj, src){
-    var own = {}.hasOwnProperty;
-    for (var key in src) if (own.call(src, key)) obj[key] = src[key];
-    return obj;
-  }
-}).call(this);
-
-
-
-/*
- * src/helpers/keycodes.ls - File number: 6
+ * src/helpers/keycodes.ls - File number: 5
  *
  */
 
@@ -981,7 +959,7 @@ if (!f(x)) {
 
 
 /*
- * src/helpers/lists.ls - File number: 7
+ * src/helpers/lists.ls - File number: 6
  *
  */
 
@@ -1013,7 +991,7 @@ if (!f(x)) {
 
 
 /*
- * src/helpers/numbers.ls - File number: 8
+ * src/helpers/numbers.ls - File number: 7
  *
  */
 
@@ -1051,7 +1029,7 @@ if (!f(x)) {
 
 
 /*
- * src/helpers/pubsub.ls - File number: 9
+ * src/helpers/pubsub.ls - File number: 8
  *
  */
 
@@ -1106,14 +1084,37 @@ if (!f(x)) {
 
 
 /*
- * src/helpers/strings.ls - File number: 10
+ * src/helpers/strings.ls - File number: 9
  *
  */
 
 
 (function(){
   Helpers.Strings = function(){
-    var pad, splat, smush;
+    var uppercase, lowercase, capitalize, breakAtCaps, hyphencase, pad, splat, smush;
+    uppercase = function(msg){
+      return String(msg).toUpperCase();
+    };
+    lowercase = function(msg){
+      return String(msg).toLowerCase();
+    };
+    capitalize = function(msg){
+      var µ_titleCase;
+      µ_titleCase = function(word){
+        var chars;
+        chars = letters(word);
+        return unletters([uppercase(head(chars))].concat(map(lowercase, tail(chars))));
+      };
+      return unwords(map(µ_titleCase, words(msg)));
+    };
+    breakAtCaps = function(word){
+      return breakIt(function(it){
+        return it === it.toUpperCase();
+      }, word);
+    };
+    hyphencase = function(msg){
+      return join('-', filter(id, map(lowercase, breakAtCaps(msg))));
+    };
     pad = curry$(function(length, input, char){
       var leading;
       char == null && (char = '0');
@@ -1208,7 +1209,11 @@ if (!f(x)) {
         return take(l, unwords(lines(txt))) + e;
       }),
       pad: pad,
-      splat: splat
+      splat: splat,
+      uppercase: uppercase,
+      lowercase: lowercase,
+      capitalize: capitalize,
+      hyphencase: hyphencase
     };
   }();
   function curry$(f, args){
@@ -1223,7 +1228,7 @@ if (!f(x)) {
 
 
 /*
- * src/helpers/timers.ls - File number: 11
+ * src/helpers/timers.ls - File number: 10
  *
  */
 
@@ -1253,7 +1258,7 @@ if (!f(x)) {
 
 
 /*
- * src/helpers/types.ls - File number: 12
+ * src/helpers/types.ls - File number: 11
  *
  */
 
@@ -1298,6 +1303,42 @@ if (!f(x)) {
 
 
 /*
+ * src/helpers/install.ls - File number: 12
+ *
+ */
+
+
+(function(){
+  Helpers.installHelpers = function(target, groups){
+    var name, ref$, group, i$, len$, results$ = [];
+    target == null && (target = window);
+    groups == null && (groups = []);
+    if (groups.length === 0) {
+      log('Helpers::Install -', join(' + ', keys(Helpers)));
+      for (name in ref$ = Helpers) {
+        group = ref$[name];
+        results$.push(import$(target, group));
+      }
+      return results$;
+    } else {
+      log('Helpers::Install -', join(' + ', groups));
+      for (i$ = 0, len$ = groups.length; i$ < len$; ++i$) {
+        group = groups[i$];
+        results$.push(import$(target, Helpers[group]));
+      }
+      return results$;
+    }
+  };
+  function import$(obj, src){
+    var own = {}.hasOwnProperty;
+    for (var key in src) if (own.call(src, key)) obj[key] = src[key];
+    return obj;
+  }
+}).call(this);
+
+
+
+/*
  * src/pages/home.ls - File number: 13
  *
  */
@@ -1312,192 +1353,17 @@ if (!f(x)) {
 
 
 /*
- * src/init/jquery-ext.ls - File number: 14
+ * src/init/onready.ls - File number: 14
  *
  */
 
 
 (function(){
-  (function($){
-    $.fn.exists = function(){
-      return this.length > 0;
-    };
-    $.fn.replace = function($c){
-      return this.parent().html($c);
-    };
-    $.fn.mutuallyExclusive = function(activeClass, setFirst){
-      var $all;
-      activeClass == null && (activeClass = 'active');
-      setFirst == null && (setFirst = false);
-      $all = this;
-      if (setFirst) {
-        $all.first().addClass(activeClass);
-      }
-      this.on('click', function(){
-        var $t;
-        $t = $(this);
-        $all.removeClass(activeClass);
-        if (!$t.hasClass(activeClass)) {
-          return $t.addClass(activeClass);
-        }
-      });
-      return this;
-    };
-    $.fn.coordsOn = function(arg$, λ){
-      var pageX, pageY, x, y;
-      pageX = arg$.pageX, pageY = arg$.pageY;
-      x = pageX - this.offset().left;
-      y = pageY - this.offset().top;
-      return λ(x, y, x / this.outerWidth(), y / this.outerHeight());
-    };
-    $.fn.reduce = function(λ, s){
-      s == null && (s = 0);
-      this.each(function(){
-        return s = λ($(this), s);
-      });
-      return s;
-    };
-    $.fn.groupBy = function(ƒ_groupKey){
-      var sets, jqGroup;
-      sets = {};
-      jqGroup = function(items){
-        var g, i$, len$, item;
-        g = null;
-        for (i$ = 0, len$ = items.length; i$ < len$; ++i$) {
-          item = items[i$];
-          if (g != null) {
-            g = g.add(item);
-          } else {
-            g = $(item);
-          }
-        }
-        return g;
-      };
-      this.each(function(){
-        var key$;
-        return (sets[key$ = ƒ_groupKey(this)] || (sets[key$] = [])).push(this);
-      });
-      return map(jqGroup, sets);
-    };
-    $.fn.event = function(){
-      log("JQX::js-event", this.length);
-      return this.on('click', function(){
-        var ref$, event, eventData, dataArgs;
-        ref$ = $(this).data(), event = ref$.event, eventData = ref$.eventData;
-        dataArgs = eventData != null
-          ? String(eventData).split(',')
-          : [];
-        return pub.apply(this, [event].concat(dataArgs));
-      });
-    };
-    $.fn.reveal = function(){
-      log("JQX::js-reveal", this.length);
-      return this.each(function(){
-        var $this, targetEvent;
-        $this = $(this);
-        targetEvent = $this.data('show-event');
-        return sub(targetEvent, function(){
-          return $this.show();
-        });
-      });
-    };
-    $.fn.collapse = function(speed){
-      speed == null && (speed = 300);
-      log('JQX::js-collapse', this.length);
-      this.each(function(){
-        return $(this).data('state', 'closed');
-      });
-      return this.on('click', function(){
-        var $this, selector, $target, state;
-        $this = $(this);
-        selector = $this.data('collapse');
-        $target = $(selector);
-        state = $target.data('state');
-        if (state !== 'open') {
-          $target.slideDown(speed);
-          return $target.data('state', 'open');
-        } else {
-          $target.slideUp(speed);
-          return $target.data('state', 'closed');
-        }
-      });
-    };
-    $.fn.swap = function(){
-      var swapSets, get, show, name, set, results$ = [];
-      log('JQX::js-swap', this.length);
-      swapSets = this.groupBy(function(el){
-        return $(el).data('swap-id');
-      });
-      get = function(name){
-        var that;
-        if (that = swapSets[name]) {
-          return that;
-        } else {
-          throw new Error('JQX::js-swap - No such grouping: ' + name);
-        }
-      };
-      show = function(groupName, targetId){
-        var $group, $target;
-        $group = get(groupName);
-        $target = targetId != null
-          ? $group.filter('#' + targetId)
-          : $group.first();
-        $group.hide();
-        return $target.show();
-      };
-      sub('swap', show);
-      for (name in swapSets) {
-        set = swapSets[name];
-        if (set.first().data('swap-option') !== 'no-default') {
-          results$.push(set.first().show());
-        }
-      }
-      return results$;
-    };
-    $(function(){
-      var sets, name, $group, results$ = [];
-      sets = $('[class*="js-"]').groupBy(function(el){
-        var that;
-        if (that = el.className.match(/js-([-\w]*)/)) {
-          return that[1];
-        } else {
-          return '';
-        }
-      });
-      for (name in sets) {
-        $group = sets[name];
-        results$.push(typeof $group[name] === 'function' ? $group[name]() : void 8);
-      }
-      return results$;
-    });
-  }.call(this, jQuery));
-}).call(this);
-
-
-
-/*
- * src/init/onready.ls - File number: 15
- *
- */
-
-
-(function(){
-  installHelpers();
-  Controllers.runPageControllers = function(){
-    var $page, ctrlName;
-    $page = $('[data-page-controller]').last();
-    ctrlName = $page.data('page-controller');
-    if (ctrlName != null) {
-      log("PageController '" + ctrlName + "' requested");
-      return typeof Controllers[ctrlName] === 'function' ? Controllers[ctrlName]($page, function(it){
-        return $page.find(it);
-      }) : void 8;
-    }
-  };
   $(function(){
-    log("--------------------\n    INITIALISING\n--------------------");
+    Helpers.installHelpers();
     PubSub.enableSpying();
     Controllers.runPageControllers();
+    log("--------------------\n       READY\n--------------------");
   });
 }).call(this);
 
