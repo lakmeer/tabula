@@ -15,7 +15,7 @@ Helpers.PubSub = do ->
     check ch
     if PUB_SPY then log ' >>', ch, '->', msg
     for fn in channels[ch]
-      fn msg
+      fn? msg
 
   sub = (ch, fn) ->
     check ch
