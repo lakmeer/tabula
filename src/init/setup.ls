@@ -77,12 +77,14 @@ jQuery.B = $('body')
 
 Controllers.runPageControllers = ->
 
-  $page = $('[data-page-controller]').last!
-  ctrlName = $page.data 'page-controller'
+  $pages = $('[data-page-controller]')
 
-  if ctrlName?
-    log "PageController '#ctrlName' requested"
-    Controllers[ctrlName]? $page, -> $page.find it
+  $pages.each ->
+    $page = $(this)
+    ctrlName = $page.data 'page-controller'
+    if ctrlName?
+      log "PageController '#ctrlName' requested"
+      Controllers[ctrlName]? $page, -> $page.find it
 
 
 # Install Prelude

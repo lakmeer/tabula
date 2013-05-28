@@ -126,6 +126,7 @@ let $ = jQuery
       { event, eventData } = $(this).data!
       dataArgs = if eventData? then String(eventData).split ',' else []
       pub.apply this, [ event ] +++ dataArgs
+      return false
 
 
   # JS Reveal
