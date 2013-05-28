@@ -797,15 +797,19 @@ if (!f(x)) {
   jQuery.W = $(window);
   jQuery.B = $('body');
   Controllers.runPageControllers = function(){
-    var $page, ctrlName;
-    $page = $('[data-page-controller]').last();
-    ctrlName = $page.data('page-controller');
-    if (ctrlName != null) {
-      log("PageController '" + ctrlName + "' requested");
-      return typeof Controllers[ctrlName] === 'function' ? Controllers[ctrlName]($page, function(it){
-        return $page.find(it);
-      }) : void 8;
-    }
+    var $pages;
+    $pages = $('[data-page-controller]');
+    return $pages.each(function(){
+      var $page, ctrlName;
+      $page = $(this);
+      ctrlName = $page.data('page-controller');
+      if (ctrlName != null) {
+        log("PageController '" + ctrlName + "' requested");
+        return typeof Controllers[ctrlName] === 'function' ? Controllers[ctrlName]($page, function(it){
+          return $page.find(it);
+        }) : void 8;
+      }
+    });
   };
   import$(window, prelude);
   jQuery.support.cors = true;
@@ -926,6 +930,9 @@ if (!f(x)) {
         $(host).append(code);
       }
       return code;
+    },
+    urlToParts: function(it){
+      return filter(id, it.split('/'));
     }
   };
 }).call(this);
@@ -1035,6 +1042,7 @@ if (!f(x)) {
 
 
 (function(){
+  var slice$ = [].slice;
   Helpers.PubSub = function(){
     var PUB_SPY, channels, check, pub, sub;
     PUB_SPY = false;
@@ -1044,15 +1052,16 @@ if (!f(x)) {
         return channels[ch] = [];
       }
     };
-    pub = function(ch, msg){
-      var i$, ref$, len$, fn, results$ = [];
+    pub = function(ch){
+      var msg, i$, ref$, len$, fn, results$ = [];
+      msg = slice$.call(arguments, 1);
       check(ch);
       if (PUB_SPY) {
-        log(' >>', ch, '->', msg);
+        log.apply(null, [" >> " + ch + " ->"].concat(msg));
       }
       for (i$ = 0, len$ = (ref$ = channels[ch]).length; i$ < len$; ++i$) {
         fn = ref$[i$];
-        results$.push(fn(msg));
+        results$.push(fn != null ? fn.apply(window, msg) : void 8);
       }
       return results$;
     };
@@ -1339,7 +1348,177 @@ if (!f(x)) {
 
 
 /*
- * src/pages/home.ls - File number: 13
+ * src/lib/placeholder.js - File number: 13
+ *
+ */
+
+
+/*! http://mths.be/placeholder v2.0.7 by @mathias */
+;(function(window, document, $) {
+
+	var isInputSupported    = ( 'placeholder' in document.createElement('input') ),
+	    isTextareaSupported = ( 'placeholder' in document.createElement('textarea') ),
+	    prototype = $.fn,
+	    valHooks = $.valHooks,
+	    hooks,
+	    placeholder;
+
+	if ( isInputSupported && isTextareaSupported ) {
+
+		placeholder = prototype.placeholder = function() { return this; };
+		placeholder.input = placeholder.textarea = true;
+
+	} else {
+
+		placeholder = prototype.placeholder = function() {
+			var $this = this;
+			$this
+				.filter((isInputSupported ? 'textarea' : ':input') + '[placeholder]')
+				.not('.placeholder')
+				.bind({
+					'focus.placeholder': clearPlaceholder,
+					'blur.placeholder': setPlaceholder
+				})
+				.data('placeholder-enabled', true)
+				.trigger('blur.placeholder');
+			return $this;
+		};
+
+		placeholder.input = isInputSupported;
+		placeholder.textarea = isTextareaSupported;
+
+		hooks = {
+			'get': function(element) {
+				var $element = $(element);
+				return $element.data('placeholder-enabled') && $element.hasClass('placeholder') ? '' : element.value;
+			},
+
+			'set': function(element, value) {
+				var $element = $(element);
+
+				if (!$element.data('placeholder-enabled')) {
+					return element.value = value;
+				}
+
+				if (value == '') {
+					element.value = value;
+
+					// Issue #56: Setting the placeholder causes problems if the element continues to have focus.
+					if (element != document.activeElement) {
+						// We can't use `triggerHandler` here because of dummy text/password inputs :(
+						setPlaceholder.call(element);
+					}
+
+				} else if ($element.hasClass('placeholder')) {
+					clearPlaceholder.call(element, true, value) || (element.value = value);
+				} else {
+					element.value = value;
+				}
+
+				// `set` can not return `undefined`; see http://jsapi.info/jquery/1.7.1/val#L2363
+				return $element;
+			}
+		};
+
+		isInputSupported || (valHooks.input = hooks);
+		isTextareaSupported || (valHooks.textarea = hooks);
+
+		$(function() {
+			// Look for forms
+			$(document).delegate('form', 'submit.placeholder', function() {
+				// Clear the placeholder values so they don't get submitted
+				var $inputs = $('.placeholder', this).each(clearPlaceholder);
+				setTimeout(function() {
+					$inputs.each(setPlaceholder);
+				}, 10);
+			});
+		});
+
+		// Clear placeholder values upon page reload
+		$(window).bind('beforeunload.placeholder', function() {
+			$('.placeholder').each(function() {
+				this.value = '';
+			});
+		});
+
+	}
+
+	function args(elem) {
+		// Return an object of element attributes
+		var newAttrs = {},
+		    rinlinejQuery = /^jQuery\d+$/;
+		$.each(elem.attributes, function(i, attr) {
+			if (attr.specified && !rinlinejQuery.test(attr.name)) {
+				newAttrs[attr.name] = attr.value;
+			}
+		});
+		return newAttrs;
+	}
+
+	function clearPlaceholder(event, value) {
+		var input = this,
+		    $input = $(input);
+		if (input.value == $input.attr('placeholder') && $input.hasClass('placeholder')) {
+			if ($input.data('placeholder-password')) {
+				$input = $input.hide().next().show().attr('id', $input.removeAttr('id').data('placeholder-id'));
+				// If `clearPlaceholder` was called from `$.valHooks.input.set`
+				if (event === true) {
+					return $input[0].value = value;
+				}
+				$input.focus();
+			} else {
+				input.value = '';
+				$input.removeClass('placeholder');
+				input == document.activeElement && input.select();
+			}
+		}
+	}
+
+	function setPlaceholder() {
+		var $replacement,
+		    input = this,
+		    $input = $(input),
+		    $origInput = $input,
+		    id = this.id;
+
+		if (input.value == '') {
+			if (input.type == 'password') {
+				if (!$input.data('placeholder-textinput')) {
+					try {
+						$replacement = $input.clone().attr({ 'type': 'text' });
+					} catch(e) {
+						$replacement = $('<input>').attr($.extend(args(this), { 'type': 'text' }));
+					}
+					$replacement
+						.removeAttr('name')
+						.data({
+							'placeholder-password': true,
+							'placeholder-id': id
+						})
+						.bind('focus.placeholder', clearPlaceholder);
+					$input
+						.data({
+							'placeholder-textinput': $replacement,
+							'placeholder-id': id
+						})
+						.before($replacement);
+				}
+				$input = $input.removeAttr('id').hide().prev().attr('id', id).show();
+				// Note: `$input[0] != input` now!
+			}
+			$input.addClass('placeholder');
+			$input[0].value = $input.attr('placeholder');
+		} else {
+			$input.removeClass('placeholder');
+		}
+	}
+
+}(this, document, jQuery));
+
+
+
+/*
+ * src/pages/home.ls - File number: 14
  *
  */
 
@@ -1353,7 +1532,180 @@ if (!f(x)) {
 
 
 /*
- * src/init/onready.ls - File number: 14
+ * src/init/jquery-ext.ls - File number: 15
+ *
+ */
+
+
+(function(){
+  (function($){
+    $.fn.exists = function(){
+      return this.length > 0;
+    };
+    $.fn.replace = function($c){
+      return this.parent().html($c);
+    };
+    $.fn.map = function(λ){
+      var i$, ref$, len$, item, results$ = [];
+      for (i$ = 0, len$ = (ref$ = this.toArray()).length; i$ < len$; ++i$) {
+        item = ref$[i$];
+        results$.push(λ.apply(item, [ix]));
+      }
+      return results$;
+    };
+    $.fn.mutuallyExclusive = function(activeClass, setFirst){
+      var $all;
+      activeClass == null && (activeClass = 'active');
+      setFirst == null && (setFirst = false);
+      $all = this;
+      if (setFirst) {
+        $all.first().addClass(activeClass);
+      }
+      this.on('click', function(){
+        var $t;
+        $t = $(this);
+        $all.removeClass(activeClass);
+        if (!$t.hasClass(activeClass)) {
+          return $t.addClass(activeClass);
+        }
+      });
+      return this;
+    };
+    $.fn.coordsOn = function(arg$, λ){
+      var pageX, pageY, x, y;
+      pageX = arg$.pageX, pageY = arg$.pageY;
+      x = pageX - this.offset().left;
+      y = pageY - this.offset().top;
+      return λ(x, y, x / this.outerWidth(), y / this.outerHeight());
+    };
+    $.fn.reduce = function(λ, s){
+      s == null && (s = 0);
+      this.each(function(){
+        return s = λ($(this), s);
+      });
+      return s;
+    };
+    $.fn.groupBy = function(ƒ_groupKey){
+      var sets, jqGroup;
+      sets = {};
+      jqGroup = function(items){
+        var g, i$, len$, item;
+        g = null;
+        for (i$ = 0, len$ = items.length; i$ < len$; ++i$) {
+          item = items[i$];
+          if (g != null) {
+            g = g.add(item);
+          } else {
+            g = $(item);
+          }
+        }
+        return g;
+      };
+      this.each(function(){
+        var key$;
+        return (sets[key$ = ƒ_groupKey(this)] || (sets[key$] = [])).push(this);
+      });
+      return map(jqGroup, sets);
+    };
+    $.fn.event = function(){
+      log("JQX::js-event", this.length);
+      return this.on('click', function(){
+        var ref$, event, eventData, dataArgs;
+        ref$ = $(this).data(), event = ref$.event, eventData = ref$.eventData;
+        dataArgs = eventData != null
+          ? String(eventData).split(',')
+          : [];
+        pub.apply(this, [event].concat(dataArgs));
+        return false;
+      });
+    };
+    $.fn.reveal = function(){
+      log("JQX::js-reveal", this.length);
+      return this.each(function(){
+        var $this, targetEvent;
+        $this = $(this);
+        targetEvent = $this.data('show-event');
+        return sub(targetEvent, function(){
+          return $this.show();
+        });
+      });
+    };
+    $.fn.collapse = function(speed){
+      speed == null && (speed = 300);
+      log('JQX::js-collapse', this.length);
+      this.each(function(){
+        return $(this).data('state', 'closed');
+      });
+      return this.on('click', function(){
+        var $this, selector, $target, state;
+        $this = $(this);
+        selector = $this.data('collapse');
+        $target = $(selector);
+        state = $target.data('state');
+        if (state !== 'open') {
+          $target.slideDown(speed);
+          return $target.data('state', 'open');
+        } else {
+          $target.slideUp(speed);
+          return $target.data('state', 'closed');
+        }
+      });
+    };
+    $.fn.swap = function(){
+      var swapSets, get, show, name, set, results$ = [];
+      log('JQX::js-swap', this.length);
+      swapSets = this.groupBy(function(el){
+        return $(el).data('swap-id');
+      });
+      get = function(name){
+        var that;
+        if (that = swapSets[name]) {
+          return that;
+        } else {
+          throw new Error('JQX::js-swap - No such grouping: ' + name);
+        }
+      };
+      show = function(groupName, targetId){
+        var $group, $target;
+        $group = get(groupName);
+        $target = targetId != null
+          ? $group.filter('#' + targetId)
+          : $group.first();
+        $group.hide();
+        return $target.show();
+      };
+      sub('swap', show);
+      for (name in swapSets) {
+        set = swapSets[name];
+        if (set.first().data('swap-option') !== 'no-default') {
+          results$.push(set.first().show());
+        }
+      }
+      return results$;
+    };
+    $(function(){
+      var sets, name, $group, results$ = [];
+      sets = $('[class*="js-"]').groupBy(function(el){
+        var that;
+        if (that = el.className.match(/js-([-\w]*)/)) {
+          return that[1];
+        } else {
+          return '';
+        }
+      });
+      for (name in sets) {
+        $group = sets[name];
+        results$.push(typeof $group[name] === 'function' ? $group[name]() : void 8);
+      }
+      return results$;
+    });
+  }.call(this, jQuery));
+}).call(this);
+
+
+
+/*
+ * src/init/onready.ls - File number: 16
  *
  */
 

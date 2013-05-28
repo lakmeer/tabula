@@ -40,13 +40,14 @@ project =
     "src/lib/placeholder.js"
 
     # Class Definitions
-    # src/classes/...
+    # "src/classes/scroller.ls"
+    # "src/classes/asset-loader.ls"
 
     # Page Controllers
     "src/pages/home.ls"
 
     # Program Start
-    # "src/init/jquery-ext.ls"
+    "src/init/jquery-ext.ls"
     "src/init/onready.ls"
 
   ]

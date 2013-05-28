@@ -20,3 +20,5 @@ Helpers.Dom =
     if host? then $(host).append(code)
     code
 
+  url-to-parts : -> filter id, it.split '/'
+
