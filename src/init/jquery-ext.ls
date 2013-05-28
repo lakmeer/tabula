@@ -21,6 +21,15 @@ let $ = jQuery
     @parent!html $c
 
 
+  # Map
+  #
+  # Transform JQC into array via map function which operates in the jquery
+  # style using 'this'
+
+  $.fn.map = (λ) ->
+    [ λ.apply item, [ ix ] for item in @to-array! ]
+
+
   # MutuallyExclusive
   #
   # Out of a given collection, clicking any of the collection pulls an

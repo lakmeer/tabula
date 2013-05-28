@@ -37,7 +37,7 @@ project =
     "src/helpers/install.ls"
 
     # 3rd Party Libs
-    # src/lib/...
+    "src/lib/placeholder.js"
 
     # Class Definitions
     # src/classes/...
