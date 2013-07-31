@@ -1,4 +1,22 @@
 
+// Partial Fade
+// For when you want to do the thing where it's half-transparent but comes up on hover
+.partial-fade() {
+  .transition(opacity);
+  visibility: visible;
+  opacity: 0.6;
+  &:hover { opacity: 1; }
+}
+
+// Center-with
+// Center with dimension offset
+.center-with(@w:0, @h:0) {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: @h/-2 0 0 @w/-2;
+}
+
 // Doodad
 // :before or :after element that dangles off the parent with pos:abs, providing decoration.
 .doodad(@w:20px, @h:20px) {
@@ -9,6 +27,35 @@
   display: block;
 }
 
+// Wedge Doodad
+// :before or :after element, like the point on a tooltip
+.wedge(@w, @h, @col) {
+  content: "";
+  position: absolute;
+  border: 0 solid transparent;
+  border-top-color: @col;
+  border-width: @h @w/2 0;
+}
+
+// Left-Wedge
+// like Wedge but sideways
+.left-wedge(@w, @h, @col) {
+  content: "";
+  position: absolute;
+  border: 0 solid transparent;
+  border-right-color: @col;
+  border-width: @h/2 @w @h/2 0;
+}
+
+// Right-Wedge
+// like Wedge but sideways
+.right-wedge(@w, @h, @col) {
+  content: "";
+  position: absolute;
+  border: 0 solid transparent;
+  border-left-color: @col;
+  border-width: @h/2 0 @h/2 @w;
+}
 
 // Box-sizing: border-box
 // Enforce border-box-sizing across browsers
@@ -18,7 +65,6 @@
        -o-box-sizing: border-box;
           box-sizing: border-box;
 }
-
 
 // Transition
 // Cross-browser transition effect shim for single properties
