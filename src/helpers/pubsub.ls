@@ -13,9 +13,15 @@ Helpers.PubSub = do ->
 
   pub = (ch, ...msg) ->
     check ch
+
     if PUB_SPY then log.apply null, [" >> #ch ->"].concat msg
+
     for fn in channels[ch]
-      fn?apply window, msg
+      fn?apply this, msg
+
+    if channels.all?
+      for fn in that
+        fn?apply this, [ ch ] +++ msg
 
   sub = (ch, fn) ->
     check ch
