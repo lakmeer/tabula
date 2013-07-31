@@ -48,6 +48,7 @@
 }
 
 
+
 // Compact List Display
 
 .compact {
@@ -75,17 +76,32 @@
 
 // Positioning
 
-.top-left,
-.top-right,
-.bottom-left,
-.bottom-right {
-  position: absolute !important;
-}
+.cover  (@x:0, @y:0) { top: @x; left: @y; right: @y; bottom: @x; }
 
-.top-left     { top    : 0; left  : 0; }
-.top-right    { top    : 0; right : 0; }
-.bottom-right { bottom : 0; right : 0; }
-.bottom-left  { bottom : 0; left  : 0; }
+.top-left     (@z:0) { position: absolute; top    : @z; left  : @z; }
+.top-right    (@z:0) { position: absolute; top    : @z; right : @z; }
+.bottom-right (@z:0) { position: absolute; bottom : @z; right : @z; }
+.bottom-left  (@z:0) { position: absolute; bottom : @z; left  : @z; }
+
+
+// CSS Aspect Scaling
+
+.scaler {
+  position: absolute;
+  overflow: hidden;
+  left: -50%;
+  top: -50%;
+  width: 200%;
+  height: 200%;
+
+  img {
+    .cover;
+    position: absolute;
+    margin: auto;
+    min-width: 50%;
+    min-height: 50%;
+  }
+}
 
 
 // Columns
