@@ -93,3 +93,27 @@ window <<< prelude
 # Maximum permissiveness for XDXHR in IE
 jQuery.support.cors = on
 
+# Custom Modernizr tests
+Modernizr.uses-add-event-listener = !window.attachEvent?
+Modernizr.add-test 'ie10', Function('/*@cc_on return document.documentMode===10@*/')!
+Modernizr.add-test 'safari-table-bug', ->
+  $test = $ """
+    <div style="display:table;width: 320px;visibility:hidden">
+      <div style="display: table-cell; width: 160px; border-left: 5px solid"></div>
+      <div style="display: table-cell; width: 160px; border-left: 5px solid"></div>
+    </div>
+  """
+  $('body').prepend $test
+  bug = $test.css( table-layout: \auto ).width! isnt $test.css( table-layout: \fixed).width!
+  $test.remove!
+  return bug
+
+# Maximum permissiveness for XDXHR in IE
+jQuery.support.cors = on
+
+# Tween snappiness
+TweenMax.default-ease = Power4.ease-in-out
+
+# 3d perspective matric distortion
+CSSPlugin.default-transform-perspective = 600
+
