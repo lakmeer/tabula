@@ -1,28 +1,33 @@
 
-# Helpers
+# Require
 
-{ log, concat, union } = _
+require! 'log'
+
+{ log, concat, union } = require 'helpers/index'
+
+
+# Helpers
 
 id-gen = do -> i = 0; -> i := i + 1
 
-find-json-config = ($host) ->
-  $script = $host.find 'script[type="application/json"]'
-  if $script.exists!
-    try
-      JSON.parse $script.text!
-    catch e
-      console.error "Failed to parse JSON config\n#{ e.name } '#{ e.message }' in\n", $script.text!
-    finally
-      {}
-  else
-    {}
+# find-json-config = ($host) ->
+#   $script = $host.find 'script[type="application/json"]'
+#   if $script.exists!
+#     try
+#       JSON.parse $script.text!
+#     catch e
+#       console.error "Failed to parse JSON config\n#{ e.name } '#{ e.message }' in\n", $script.text!
+#     finally
+#       {}
+#   else
+#     {}
 
 
 #
 # Widget base class
 #
 
-App.Widgets.Base = class Widget
+module.exports = class Widget
 
   ($host, config = {}) ->
 
@@ -42,7 +47,7 @@ App.Widgets.Base = class Widget
     @log = -> log.apply null, union [ "Widget[#{ @type }](#{ @id }) -" ], &
 
     # Check for internal JSON config from <script> tag
-    @json = find-json-config $host
+    # @json = find-json-config $host
 
     # Copy config object to self
     @config = ^^(@defaults or {}) <<< @json <<< config

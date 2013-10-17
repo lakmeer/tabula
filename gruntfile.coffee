@@ -8,33 +8,18 @@ module.exports = (grunt) ->
       'css/style.css' : [ 'src/styles/index.less' ]
 
     browserify:
-      files:
-        'bin/app.js' : [ 'src/index.js' ]
-
-    ###
-    coexist:
-      options: verbose: yes
-      'bin/app.js' : [
-
-        # Prelude, and then setup goes first
-        'src/lib/prelude.min.js'
-        'src/init/setup.ls'
-        'src/classes/pubsub.ls'
-
-        # Then external libs
-        'src/lib/*'
-        '!src/lib/modernizr.js'
-
-        # Then all source files (in this order)
-        'src/init/*'
-        'src/classes/*'
-        'src/templates/*'
-        'src/widgets/*'
-        'src/pages/*'
-      ]
-
-      'bin/modernizr.js' : [ 'src/lib/modernizr.js' ]
-    ###
+      default:
+        files:
+          'bin/app.js' : [ 'src/script/index.ls' ]
+        options:
+          debug: on
+          verbose: yes
+          transform: ['liveify']
+          alias: './src/script/modules/log.ls:log,./src/script/helpers/index.ls:helpers'
+          aliasMappings:
+            cwd: 'src/script'
+            src: '**/*.ls'
+            dest: ''
 
     uglify:
       options:
@@ -47,18 +32,16 @@ module.exports = (grunt) ->
     watch:
       coexist:
         files: [ 'src/**/*.ls', 'src/**/*.js', 'src/**/*.coffee' ]
-        tasks: 'coexist'
+        tasks: 'browserify'
       css:
         files: [ 'src/styles/**/*.less' ]
         tasks: 'less'
-
 
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-contrib-less'
   grunt.loadNpmTasks 'grunt-contrib-uglify'
   grunt.loadNpmTasks 'grunt-browserify'
-  grunt.loadNpmTasks 'grunt-coexist'
 
-  grunt.registerTask 'develop', [ 'less', 'browserify' ]
+  grunt.registerTask 'default', [ 'less', 'browserify' ]
   grunt.registerTask 'compile', [ 'less', 'browserify', 'uglify' ]
 
