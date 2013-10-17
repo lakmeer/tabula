@@ -1,0 +1,23 @@
+
+// Site Fonts
+
+@sans  : 'Arial', sans-serif;
+@serif : 'Georgia', serif;
+
+
+.font-body()  { font-family: @sans; }
+.font-title() { font-family: @sans;  letter-spacing: 1px; }
+.font-fancy() { font-family: @serif; font-style: italic; }
+
+
+
+// Typographic Defaults
+
+body {
+  .font-body;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  .font-title;
+}
+

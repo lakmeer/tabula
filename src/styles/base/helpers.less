@@ -1,10 +1,14 @@
 
-//
-// HTML5 ✰ Helper Classes
-//
+// Centering
+
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
 
 
 // Clearfix
+
 .clearfix {
   &:before, &:after {
     content: " ";
@@ -17,14 +21,16 @@
 
 
 // Image Replacement
+
 .ir {
   border: 0;
   background-color: transparent;
   background-repeat: no-repeat;
   overflow: hidden;
+  color: transparent;
 
   &:before {
-    width: 0;
+    width: 1px;
     height: 100%;
     content: "";
     display: block;
@@ -33,6 +39,7 @@
 
 
 // Hide
+
 .hidden {
   display: none !important;
   visibility: hidden;
@@ -40,6 +47,7 @@
 
 
 // Screen-reader-aware content hiding
+
 .visuallyhidden {
   border: 0;
   clip: rect(0 0 0 0);
@@ -52,20 +60,23 @@
 }
 
 
-// Keep selectable
-.visuallyhidden.focusable:active,
-.visuallyhidden.focusable:focus {
-  clip: auto;
-  height: auto;
-  margin: 0;
-  overflow: visible;
-  position: static;
-  width: auto;
-}
+// CSS Aspect Scaling
 
+.scaler {
+  position: absolute;
+  overflow: hidden;
+  left: -50%;
+  top: -50%;
+  width: 200%;
+  height: 200%;
 
-// Hidden but keeps layout
-.invisible {
-  visibility: hidden;
+  img {
+    .cover;
+    position: absolute;
+    margin: auto;
+    width: auto !important;
+    min-width: 50%;
+    min-height: 50%;
+  }
 }
 

@@ -1,4 +1,8 @@
 
+// Debug layout
+.debug  { box-shadow: 0 0 2px black inset; }
+.debugl { box-shadow: 0 0 2px white inset; }
+
 // Partial Fade
 // For when you want to do the thing where it's half-transparent but comes up on hover
 .partial-fade() {
@@ -8,58 +12,9 @@
   &:hover { opacity: 1; }
 }
 
-// Center-with
-// Center with dimension offset
-.center-with(@w:0, @h:0) {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin: @h/-2 0 0 @w/-2;
-}
-
-// Doodad
-// :before or :after element that dangles off the parent with pos:abs, providing decoration.
-.doodad(@w:20px, @h:20px) {
-  position: absolute;
-  content: '';
-  width: @w;
-  height: @h;
-  display: block;
-}
-
-// Wedge Doodad
-// :before or :after element, like the point on a tooltip
-.wedge(@w, @h, @col) {
-  content: "";
-  position: absolute;
-  border: 0 solid transparent;
-  border-top-color: @col;
-  border-width: @h @w/2 0;
-}
-
-// Left-Wedge
-// like Wedge but sideways
-.left-wedge(@w, @h, @col) {
-  content: "";
-  position: absolute;
-  border: 0 solid transparent;
-  border-right-color: @col;
-  border-width: @h/2 @w @h/2 0;
-}
-
-// Right-Wedge
-// like Wedge but sideways
-.right-wedge(@w, @h, @col) {
-  content: "";
-  position: absolute;
-  border: 0 solid transparent;
-  border-left-color: @col;
-  border-width: @h/2 0 @h/2 @w;
-}
-
 // Box-sizing: border-box
 // Enforce border-box-sizing across browsers
-.border-box {
+.border-box() {
   -webkit-box-sizing: border-box;
      -moz-box-sizing: border-box;
        -o-box-sizing: border-box;
@@ -68,12 +23,81 @@
 
 // Transition
 // Cross-browser transition effect shim for single properties
-.transition(@prop:all, @easing:ease-in-out, @duration:0.3s) {
+.transition(@prop:all, @easing:ease-out, @duration:0.2s) {
   -webkit-transition: @prop @easing @duration;
    -khtml-transition: @prop @easing @duration;
      -moz-transition: @prop @easing @duration;
       -ms-transition: @prop @easing @duration;
        -o-transition: @prop @easing @duration;
           transition: @prop @easing @duration;
+}
+
+// Collapse as pre-js state for expandable content
+.collapse() {
+  overflow: hidden;
+  height: 0px;
+}
+
+// Positioning
+.cover  (@x:0, @y:0) { top: @x; left: @y; right: @y; bottom: @x; }
+.top-left     (@z:0) { position: absolute; top    : @z; left  : @z; }
+.top-right    (@z:0) { position: absolute; top    : @z; right : @z; }
+.bottom-right (@z:0) { position: absolute; bottom : @z; right : @z; }
+.bottom-left  (@z:0) { position: absolute; bottom : @z; left  : @z; }
+
+// Normal centering
+.center() {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+// Center-with
+.center-with(@w, @h) {
+  left: 50%;
+  top: 50%;
+  width: @w;
+  height: @h;
+  margin: @w/-2 0 0 @h/-2;
+}
+
+// Doodad
+.doodad(@w: 20px, @h: 20px) {
+  position: absolute;
+  width: @w;
+  height: @h;
+  content: "";
+}
+
+// Circular
+.circle(@d, @color:@col_main) {
+  display: block;
+  width: @d;
+  height: @d;
+  line-height: @d;
+  text-align: center;
+  color: @color;
+  border: 1px solid;
+  border-radius: 50%;
+}
+
+// Debug attribute visualisation
+.show-attr(@attr) {
+  content: @attr;
+  font-family: monospace;
+  white-space: nowrap;
+  position: absolute;
+  left: 0;
+  top: 100%;
+  margin-top: -5px;
+  font-size: 10px;
+}
+
+// Badge
+.badge(@size, @color) {
+  .circle(@size, @color);
+  font-size: @size - 10;
+  background: white;
+  position: absolute;
+  margin: @size/-2 0 0 @size/-2;
 }
 

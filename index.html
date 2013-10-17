@@ -19,44 +19,40 @@
     <script src="/lib/modernizr.min.js"></script>
   </head>
 
-  <body data-page-controller="home">
-    <div class="center">
+  <body data-page-controller="default">
+    <article>
       <header>
         <h1>Tabula</h1>
         <h2>It's a start</h2>
       </header>
 
-      <div class="main" role="main">
+      <main>
         <h3>Things to do:</h3>
 
         <ul>
           <li>Create .dev</li>
-          <li>Update <a href="http://www.jquery.com/download"    target="_blank">jQuery</a></li>
+          <li>Set up grunt</li>
+          <li>Update <a href="http://www.jquery.com/download"    target="_blank">jQuery</a> (currently 1.10.2)</li>
           <li>Update <a href="http://www.modernizr.com/download" target="_blank">Modernizr</a></li>
           <li>Compile helper and common style improvements from the last project</li>
           <li>Run tests green</li>
           <li>Push changes back to Tabula</li>
           <li>Arrange 3rd party libs</li>
-          <li>Set up LiveReload</li>
         </ul>
-      </div>
+      </main>
 
       <footer>
         <a href="http://github.com/lakmeer/tabula">github.com/lakmeer/tabula</a>
       </footer>
-    </div>
+    </article>
 
     <!-- Late Javascript -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="/lib/jquery.min.js"><\/script>')</script>
-    <script src="/lib/TweenMax.min.js"></script>
+    <script src="/lib/tweenmax.min.js"></script>
 
     <!-- Main Application -->
-    <script>
-      var Config = {
-        ENABLE_LOGGING : true
-      };
-    </script>
+    <script> var Config = { ENABLE_LOGGING : true }; </script>
     <script src="/bin/app.js"></script>
 
     <!-- Analytics -->
