@@ -1,0 +1,39 @@
+
+// Print-only style
+// Include them here to prevent browser doing http trip for seperate print sheet
+@media print {
+
+  // Pure black for faster printing and better ink economy
+  * {
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  // Inset pages neatly
+  @page { margin: 0.5cm; }
+
+  // Output link destinations, except IR's, javascript triggers and page anchors
+  a, a:visited { text-decoration: underline; }
+  a[href]:after { content: " (" attr(href) ")"; }
+  .ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after { content: ""; }
+
+  // Expand abbreviations
+  abbr[title]:after { content: " (" attr(title) ")"; }
+
+  // Contain blockquotes and code samples
+  pre, blockquote { border: 1px solid #999; page-break-inside: avoid; }
+
+  // Table layouts
+  thead { display: table-header-group; }
+  tr, img { page-break-inside: avoid; }
+
+  // Keep whole on page please
+  img { max-width: 100% !important; }
+
+  // Typography considerations
+  h2, h3 { page-break-after: avoid; }
+  p, h2, h3 { orphans: 3; widows: 3; }
+
+}

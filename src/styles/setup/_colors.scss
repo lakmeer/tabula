@@ -1,0 +1,34 @@
+
+//
+// Site Palette
+//
+
+$black: #333333;
+$grey : #888;
+$white: #ffffff;
+
+$action_blue : #37f;
+$error_red : #d31;
+
+$shadow_dark : fade($black, 40%);
+
+
+// Text colors
+
+$col_main      : $black;
+$col_secondary : $grey;
+$col_border    : $grey;
+$col_highlight : $action_blue;
+$col_error     : $error_red;
+
+
+// Fill colors
+
+$bg_main      : $white;
+$bg_secondary : $black;
+
+
+// Other
+
+$col_shadow: $shadow_dark;
+

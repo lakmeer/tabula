@@ -1,7 +1,7 @@
 
 require! \log
 
-{ map } = require \helpers/index
+{ map, filter, id } = require \helpers/index
 
 
 #
@@ -12,9 +12,10 @@ require! \log
 
 exports.detect-page-controllers = ->
   scopes = $('[data-page-controller]').to-array!
-  names  = map (-> $(it).data \page-controller), scopes
-  log "App::Setup - detecting page controllers", names
-  { [ $(el).data('page-controller'), $(el) ] for el in scopes }
+  names  = filter id, map (-> $(it).data \page-controller), scopes
+  if names.length
+    log "App::Setup - detecting page controllers", names
+    { [ $(el).data('page-controller'), $(el) ] for el in scopes }
 
 
 #
@@ -26,9 +27,13 @@ exports.detect-page-controllers = ->
 exports.load-page = (name) ->
   $scope = $("[data-page-controller=#name]")
 
-  if $scope.exists!
+  if not name? or name is ""
+    log "No controller name given: '#name'."
+
+  else if $scope.exists! and
     page = require "pages/#name"
     page $scope, $
+
   else
     log "No such page controller: '#name'."
 
@@ -42,4 +47,5 @@ exports.load-page = (name) ->
 exports.auto-load = ->
   for name, _ of exports.detect-page-controllers!
     exports.load-page name
+
 

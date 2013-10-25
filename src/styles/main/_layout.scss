@@ -1,0 +1,8 @@
+
+// Main layout and global styles
+
+article {
+  @extend .center;
+  width: $page_width;
+}
+

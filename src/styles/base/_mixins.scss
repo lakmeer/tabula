@@ -1,0 +1,103 @@
+
+// Debug layout
+@mixin debug  { box-shadow: 0 0 2px black inset; }
+@mixin debugl { box-shadow: 0 0 2px white inset; }
+
+// Partial Fade
+// For when you want to do the thing where it's half-transparent but comes up on hover
+@mixin partial-fade() {
+  @include transition(opacity);
+  visibility: visible;
+  opacity: 0.6;
+  &:hover { opacity: 1; }
+}
+
+// Box-sizing: border-box
+// Enforce border-box-sizing across browsers
+@mixin border-box() {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+       -o-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+// Transition
+// Cross-browser transition effect shim for single properties
+@mixin transition($prop:all, $easing:ease-out, $duration:0.2s) {
+  -webkit-transition: $prop $easing $duration;
+   -khtml-transition: $prop $easing $duration;
+     -moz-transition: $prop $easing $duration;
+      -ms-transition: $prop $easing $duration;
+       -o-transition: $prop $easing $duration;
+          transition: $prop $easing $duration;
+}
+
+// Collapse as pre-js state for expandable content
+@mixin collapse() {
+  overflow: hidden;
+  height: 0px;
+}
+
+// Positioning
+@mixin cover  ($x:0, $y:0) { top: $x; left: $y; right: $y; bottom: $x; }
+@mixin top-left     ($z:0) { position: absolute; top    : $z; left  : $z; }
+@mixin top-right    ($z:0) { position: absolute; top    : $z; right : $z; }
+@mixin bottom-right ($z:0) { position: absolute; bottom : $z; right : $z; }
+@mixin bottom-left  ($z:0) { position: absolute; bottom : $z; left  : $z; }
+
+// Normal centering
+@mixin center() {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+// Center-with
+@mixin center-with($w, $h) {
+  left: 50%;
+  top: 50%;
+  width: $w;
+  height: $h;
+  margin: $w/-2 0 0 $h/-2;
+}
+
+// Doodad
+@mixin doodad($w: 20px, $h: 20px) {
+  position: absolute;
+  width: $w;
+  height: $h;
+  content: "";
+}
+
+// Circular
+@mixin circle($d, $color:$col_main) {
+  display: block;
+  width: $d;
+  height: $d;
+  line-height: $d;
+  text-align: center;
+  color: $color;
+  border: 1px solid;
+  border-radius: 50%;
+}
+
+// Debug attribute visualisation
+@mixin show-attr($attr) {
+  content: $attr;
+  font-family: monospace;
+  white-space: nowrap;
+  position: absolute;
+  left: 0;
+  top: 100%;
+  margin-top: -5px;
+  font-size: 10px;
+}
+
+// Badge
+@mixin badge($size, $color) {
+  @include circle($size, $color);
+  font-size: $size - 10;
+  background: white;
+  position: absolute;
+  margin: $size/-2 0 0 $size/-2;
+}
+

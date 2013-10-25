@@ -1,0 +1,23 @@
+
+// Site Fonts
+
+$sans  : 'Arial', sans-serif;
+$serif : 'Georgia', serif;
+
+
+@mixin font-body()  { font-family: $sans; }
+@mixin font-title() { font-family: $sans;  letter-spacing: 1px; }
+@mixin font-fancy() { font-family: $serif; font-style: italic; }
+
+
+
+// Typographic Defaults
+
+body {
+  @include font-body;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  @include font-title;
+}
+

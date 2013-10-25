@@ -1,11 +1,16 @@
-
 module.exports = (grunt) ->
+
+  bourbon = require 'node-bourbon'
+  loadAll = require 'load-grunt-tasks'
 
   grunt.initConfig
     pkg: grunt.file.readJSON 'package.json'
 
-    less:
-      'css/style.css' : [ 'src/styles/index.less' ]
+    sass:
+      default:
+        options: loadPath: bourbon.includePaths[0]
+        files:
+          'css/style.css' : [ 'src/styles/index.scss' ]
 
     browserify:
       default:
@@ -33,15 +38,16 @@ module.exports = (grunt) ->
       coexist:
         files: [ 'src/**/*.ls', 'src/**/*.js', 'src/**/*.coffee' ]
         tasks: 'browserify'
-      css:
+      less:
         files: [ 'src/styles/**/*.less' ]
         tasks: 'less'
+      sass:
+        files: [ 'src/styles/**/*.scss' ]
+        tasks: 'sass'
 
-  grunt.loadNpmTasks 'grunt-contrib-watch'
-  grunt.loadNpmTasks 'grunt-contrib-less'
-  grunt.loadNpmTasks 'grunt-contrib-uglify'
-  grunt.loadNpmTasks 'grunt-browserify'
 
-  grunt.registerTask 'default', [ 'less', 'browserify' ]
+  loadAll grunt
+
+  grunt.registerTask 'default', [ 'sass', 'browserify' ]
   grunt.registerTask 'compile', [ 'less', 'browserify', 'uglify' ]
 
